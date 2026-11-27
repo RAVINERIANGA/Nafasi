@@ -1520,6 +1520,12 @@ export function analytics(db: Database) {
     .filter((item): item is number => typeof item === "number");
   const doors = referrals.map((item) => item.doorToBedSeconds).filter((item): item is number => typeof item === "number");
   const avg = (values: number[]) => (values.length ? Math.round(values.reduce((sum, value) => sum + value, 0) / values.length) : null);
+  const median = (values: number[]) => {
+    if (!values.length) return null;
+    const sorted = [...values].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 ? sorted[mid] : Math.round((sorted[mid - 1] + sorted[mid]) / 2);
+  };
   const byStatus = Object.fromEntries(
     ["PREPARING", "BROADCASTING", "AWAITING_ACCEPTANCE", "ACCEPTED", "TRANSPORT_ASSIGNED", "EN_ROUTE", "ARRIVED", "COMPLETED", "CANCELLED", "ESCALATED"].map(
       (status) => [status, referrals.filter((item) => item.status === status).length],
@@ -1535,6 +1541,11 @@ export function analytics(db: Database) {
     cancelled: referrals.filter((item) => item.status === "CANCELLED").length,
     averageReferralToAcceptanceSeconds: avg(acceptances),
     averageDoorToBedSeconds: avg(doors),
+    avgAcceptanceSeconds: avg(acceptances),
+    avgDoorToBedSeconds: avg(doors),
+    medianAcceptanceSeconds: median(acceptances),
+    medianDoorToBedSeconds: median(doors),
+    bouncesPrevented: rerouted,
     byStatus,
     byCategory: Object.fromEntries(
       ["obstetric", "trauma", "icu", "blood", "respiratory", "cardiac", "other"].map((category) => [

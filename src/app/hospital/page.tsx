@@ -1,5 +1,5 @@
-import { RoleHome } from "@/ui/workspace";
+import { HospitalCommand } from "@/ui/hospital-command";
 
 export default function Page() {
-  return <RoleHome role="hospital" />;
+  return <HospitalCommand />;
 }

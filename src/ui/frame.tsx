@@ -20,12 +20,12 @@ const LINKS: Record<Role, [string, string][]> = {
     ["/clinic/queue", "On this device"],
   ],
   hospital: [
-    ["/hospital", "Incoming"],
+    ["/hospital", "ED Command"],
     ["/hospital/capacity", "Capacity"],
   ],
   transport: [["/transport", "Assignments"]],
   admin: [
-    ["/admin", "Region"],
+    ["/admin", "Analytics"],
     ["/admin/directory", "Directory"],
   ],
 };

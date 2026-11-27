@@ -1,5 +1,5 @@
-import { RoleHome } from "@/ui/workspace";
+import { AdminAnalytics } from "@/ui/admin-analytics";
 
 export default function Page() {
-  return <RoleHome role="admin" />;
+  return <AdminAnalytics />;
 }

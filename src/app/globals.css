@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --font-sans: "Avenir Next", "Segoe UI", sans-serif;
+  --font-display: Georgia, "Iowan Old Style", serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+body {
+  min-height: 100dvh;
+  background:
+    radial-gradient(1200px 400px at 10% -10%, rgba(14, 110, 104, 0.08), transparent 50%),
+    #f3efe6;
+}
+
+button, a, input, select, textarea {
+  touch-action: manipulation;
+}
+
+:focus-visible {
+  outline: 2px solid #0e6e68;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@keyframes pulse-ring {
+  50% { box-shadow: 0 0 0 4px rgba(159, 45, 34, 0.25); }
+}

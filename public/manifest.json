@@ -1,0 +1,17 @@
+{
+  "name": "NAFASI simulated prototype",
+  "short_name": "NAFASI",
+  "description": "Simulated emergency bed reservation prototype. Not for clinical use.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3efe6",
+  "theme_color": "#083f3c",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

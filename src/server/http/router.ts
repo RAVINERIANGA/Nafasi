@@ -73,7 +73,7 @@ export async function handle(method: string, parts: string[], req: Request) {
     const url = new URL(req.url);
 
     if (method === "GET" && path === "health") {
-      const db = readDb();
+      const db = await readDb();
       return json({
         ok: true,
         simulated: true,

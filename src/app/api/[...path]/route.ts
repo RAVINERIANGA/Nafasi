@@ -12,9 +12,9 @@ async function dispatch(method: string, req: Request, ctx: { params: Promise<{ p
   return handle(method, path, req);
 }
 
-function events(req: Request) {
+async function events(req: Request) {
   const token = new URL(req.url).searchParams.get("token");
-  const known = token && readDb().sessions.some((session) => session.token === token);
+  const known = token && (await readDb()).sessions.some((session) => session.token === token);
   if (!known) return Response.json({ error: { code: "AUTH_REQUIRED", message: "Sign in to continue." } }, { status: 401 });
   let cleanup = () => {};
   const stream = new ReadableStream({

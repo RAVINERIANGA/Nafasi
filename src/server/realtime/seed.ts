@@ -24,7 +24,7 @@ function actor(id: string): ActorStamp {
 function event(
   partial: Omit<
     AuditEvent,
-    "id" | "deviceId" | "deviceLabel" | "registrationNumber" | "actorRole" | "facilityName" | "actorId" | "facilityId" | "actorName"
+    "id" | "deviceId" | "deviceLabel" | "registrationNumber" | "actorName" | "actorRole" | "facilityName" | "actorId" | "facilityId"
   > & { actor: ActorStamp },
 ): AuditEvent {
   return {

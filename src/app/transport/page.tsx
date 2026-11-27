@@ -1,5 +1,5 @@
-import { RoleHome } from "@/ui/workspace";
+import { TransportWorkspace } from "@/ui/transport-workspace";
 
 export default function Page() {
-  return <RoleHome role="transport" />;
+  return <TransportWorkspace />;
 }

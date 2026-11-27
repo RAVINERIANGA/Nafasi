@@ -1,5 +1,5 @@
-import { RoleHome } from "@/ui/workspace";
+import { ClinicWorkspace } from "@/ui/clinic-workspace";
 
 export default function Page() {
-  return <RoleHome role="clinic" />;
+  return <ClinicWorkspace />;
 }

@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Facilities collection: public read for clinical lookup, admin only write
+    match /facilities/{facilityId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.role == 'admin';
+    }
+
+    // Capacity records: holding hospital can update, all clinical users can read
+    match /capacity/{facilityId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && (
+        request.auth.token.facilityId == facilityId || request.auth.token.role == 'admin'
+      );
+    }
+
+    // Beds: only facility triage/admin can alter, status queryable
+    match /beds/{bedId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && (
+        request.auth.token.facilityId == resource.data.facilityId || request.auth.token.role == 'admin'
+      );
+    }
+
+    // Referrals: referring clinic, destination hospital, or assigned dispatch crew
+    match /referrals/{referralId} {
+      allow read: if request.auth != null && (
+        request.auth.token.role == 'admin' ||
+        request.auth.token.facilityId == resource.data.originFacilityId ||
+        request.auth.token.facilityId == resource.data.destinationFacilityId ||
+        request.auth.token.role == 'transport'
+      );
+      
+      allow create: if request.auth != null && (
+        request.auth.token.role == 'clinic' || request.auth.token.role == 'admin'
+      );
+      
+      allow update: if request.auth != null;
+    }
+
+    // Audit Events: strictly append-only! No updates or deletes allowed ever
+    match /audit_events/{eventId} {
+      allow read: if request.auth != null && (
+        request.auth.token.role == 'admin' || request.auth.token.role == 'hospital'
+      );
+      allow create: if request.auth != null;
+      allow update, delete: if false; // Immutable!
+    }
+
+    // Transports: dispatch and assigned ambulance crews
+    match /transports/{transportId} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

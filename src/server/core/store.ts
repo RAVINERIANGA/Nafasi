@@ -4,8 +4,6 @@ import type { Database } from "@/domain/types";
 import { drainWs, publish } from "@/server/realtime/hub";
 import { createSeed } from "@/server/realtime/seed";
 import { processTimers } from "@/server/core/workflow";
-import { db as firestoreDb } from "@/services/firebase";
-import { doc, setDoc } from "firebase/firestore";
 
 const FILE = path.join(process.cwd(), "data", "store.json");
 
@@ -38,42 +36,12 @@ function load(): Database {
   return slot.memory;
 }
 
-function sanitize<T>(obj: T): T {
-  return JSON.parse(JSON.stringify(obj));
-}
-
-// Background async cloud sync to Firestore so local disk and cloud stay synchronized
-async function syncToFirestore(db: Database) {
-  try {
-    if (!firestoreDb) return;
-    // Sync latest system state snapshot to Firestore cloud
-    await setDoc(doc(firestoreDb, "system_state", "live_snapshot"), sanitize({
-      updatedAt: new Date().toISOString(),
-      referralCount: db.referrals.length,
-      activeReferrals: db.referrals.filter((r) => !["COMPLETED", "CANCELLED"].includes(r.status)).length,
-      auditCount: db.events.length,
-      latestEvent: db.events.at(-1) ?? null,
-    }), { merge: true });
-
-    // Sync any newly touched referrals
-    const latestRef = db.referrals.at(-1);
-    if (latestRef) {
-      await setDoc(doc(firestoreDb, "referrals", latestRef.id), sanitize(latestRef), { merge: true });
-    }
-  } catch (err) {
-    // Cloud sync logs non-fatal warnings without interrupting local runtime
-    console.warn("Firestore background sync note:", err);
-  }
-}
-
 function persist(db: Database) {
   fs.mkdirSync(path.dirname(FILE), { recursive: true });
   const tmp = `${FILE}.tmp`;
   fs.writeFileSync(tmp, JSON.stringify(db));
   fs.renameSync(tmp, FILE);
   bucket().memory = db;
-  // Trigger cloud sync
-  void syncToFirestore(db);
 }
 
 export function readDb(): Database {
